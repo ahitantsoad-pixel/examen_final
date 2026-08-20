@@ -1,7 +1,7 @@
-// package com.example.monprojet.controller;
+package gestion.Controller;
 
-import gestion.model.Product;
-import gestion.service.ProductService;
+import gestion.Model.Product;
+import gestion.Service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +18,19 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(product);
     }
-
 
     @PostMapping
     public ResponseEntity<Void> createProduct(@RequestBody Product product) {
