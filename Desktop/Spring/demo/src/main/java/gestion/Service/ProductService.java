@@ -1,16 +1,35 @@
+
+
+import gestion.model.Product;
+import gestion.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public BigDecimal getProductStock(String productId) {
-        // Logique métier :
-        // 1. Vérifier si le produit existe
-        // 2. Récupérer tous les mouvements IN et OUT via le repository
-        // 3. Calculer la somme : Total = (Somme IN) - (Somme OUT)
-        return productRepository.calculateTotalStock(productId);
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+
+    public Product getProductById(String id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé avec l'id : " + id));
+    }
+
+
+    public void createProduct(Product product) {
+        if (product.getName() == null || product.getName().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du produit est obligatoire");
+        }
+        productRepository.save(product);
     }
 }
